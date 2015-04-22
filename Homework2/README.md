@@ -1,2 +1,2 @@
-# Homework2
-EagleDesign
+Projects 2 - 3 for EagleDesign
+
