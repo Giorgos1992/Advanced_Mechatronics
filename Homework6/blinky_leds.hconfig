@@ -1,0 +1,18 @@
+mainmenu "MPLAB Harmony & Applicaiton Configuration"
+
+
+menu "Application Configuration"
+
+config APP_CONFIG
+    bool "Documentation"
+    default y
+    ---help---
+    IDH_HTML_APPS_PORTS_blinky_leds
+    ---endhelp---
+
+endmenu
+
+
+source "$HARMONY_VERSION_PATH/config/harmony.hconfig"
+
+
