@@ -23,7 +23,9 @@ int display_pixel_get(int row, int col);  // get the pixel at the given row and 
 //In HW 5, they were used in the main file: accelerometer.c
 //Since this project is more modular, the functions are placed in the i2c_display library, which is called by main.c
 int readADC(void);
+
 void writeletter(int letter, int x, int y);
+
 void writemessage(char *message, int xo, int yo);
 
 #endif

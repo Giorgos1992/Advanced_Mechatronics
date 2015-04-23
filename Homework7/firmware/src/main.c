@@ -1,3 +1,4 @@
+// <editor-fold defaultstate="collapsed" desc="Included libraries">
 #include <stddef.h>                     // Defines NULL
 #include <stdbool.h>                    // Defines true
 #include <stdlib.h>                     // Defines EXIT_FAILURE
@@ -16,6 +17,7 @@
 
 //Include library for the accelerometer
 #include "accel.h"
+// </editor-fold>
 
 #define MAX 1000
 //Wiring choices
@@ -126,6 +128,84 @@ static const char ASCII[96][5] = {
 
 int main ( void )
 {
+    // <editor-fold defaultstate="collapsed" desc="Extra code to print things to screen">
+        // startup
+        __builtin_disable_interrupts();
+        // set the CP0 CONFIG register to indicate that
+        // kseg0 is cacheable (0x3) or uncacheable (0x2)
+        // see Chapter 2 "CPU for Devices with M4K Core"
+        // of the PIC32 reference manual
+        __builtin_mtc0(_CP0_CONFIG, _CP0_CONFIG_SELECT, 0xa4210583);
+        // no cache on this chip!
+        // 0 data RAM access wait states
+        BMXCONbits.BMXWSDRM = 0x0;
+        // enable multi vector interrupts
+        INTCONbits.MVEC = 0x1;
+        // disable JTAG to be able to use TDI, TDO, TCK, TMS as digital
+        DDPCONbits.JTAGEN = 0;
+
+    // set up USER pin as digital input
+        TRISBbits.TRISB13 = 1; //1 for input, 0 for output
+        ANSELBbits.ANSB13 = 0; // 0 for digital, 1 for analog
+
+    // set up LED1 pin as a digital output
+        TRISBbits.TRISB7 = 0; //Set B7 to output
+        PORTBbits.RB7 = 0; //Set B7 to 0-LOW/1-HIGH to begin with
+
+        acc_setup();
+//        acc_write_register(, );
+        __builtin_enable_interrupts();
+        short accels[3]; // accelerations for the 3 axes
+        short mags[3]; // magnetometer readings for the 3 axes
+        short temp;
+           display_init();
+           char Message[MAX];
+           int Number;
+           Number = 1992;
+//           snprintf(Message, MAX, "Giorgos %d %d!", Number, temp);
+//           writemessage(Message,28,32);
+           int q=0;
+           int p;
+           while (q<100000000) //for 5 seconds
+           {
+            acc_read_register(OUT_X_L_A, (unsigned char *) accels, 6);
+          // for y-acceleration
+            if (accels[1]>=0){
+                for (p=32;p>=32-accels[1]*32/16000;p=p--){
+                    display_pixel_set(p,64,1);
+                    display_pixel_set(p,65,1);
+                    display_pixel_set(p,66,1);
+                }
+            }
+            else
+                {
+                 for (p=32;p<=32-accels[1]*32/16000;p=p++){
+                    display_pixel_set(p,64,1);
+                    display_pixel_set(p,65,1);
+                    display_pixel_set(p,66,1);
+                }
+            }
+           if (accels[0]>=0){
+                for (p=64;p>=64-accels[0]*64/16000;p=p--/* p+(accels[1]>0)?+1:-1*/){
+                    display_pixel_set(31,p,1);
+                    display_pixel_set(32,p,1);
+                    display_pixel_set(33,p,1);
+                    }
+            }
+            else
+                {
+                  for (p=64;p<=64-accels[0]*64/16000;p=p++/* p+(accels[1]>0)?+1:-1*/){
+                    display_pixel_set(31,p,1);
+                    display_pixel_set(32,p,1);
+                    display_pixel_set(33,p,1);
+                    }
+            }
+            display_draw();
+            display_clear();
+            q++;
+           }
+    // </editor-fold>
+
     /* Initialize all MPLAB Harmony modules, including application(s). */
     SYS_Initialize ( NULL );
     while ( true )
