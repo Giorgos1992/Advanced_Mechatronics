@@ -164,9 +164,9 @@ int main ( void )
            Number = 1992;
 //           snprintf(Message, MAX, "Giorgos %d %d!", Number, temp);
 //           writemessage(Message,28,32);
-           int q=0;
            int p;
-           while (q<100000000) //for 5 seconds
+           _CP0_SET_COUNT(0);
+           while (_CP0_GET_COUNT()<200000000) //for 10 seconds
            {
             acc_read_register(OUT_X_L_A, (unsigned char *) accels, 6);
           // for y-acceleration
@@ -202,7 +202,6 @@ int main ( void )
             }
             display_draw();
             display_clear();
-            q++;
            }
     // </editor-fold>
 
