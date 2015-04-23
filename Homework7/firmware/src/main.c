@@ -131,20 +131,13 @@ int main ( void )
     // <editor-fold defaultstate="collapsed" desc="Extra code to print things to screen">
         // startup
         __builtin_disable_interrupts();
-        // set the CP0 CONFIG register to indicate that
-        // kseg0 is cacheable (0x3) or uncacheable (0x2)
-        // see Chapter 2 "CPU for Devices with M4K Core"
-        // of the PIC32 reference manual
         __builtin_mtc0(_CP0_CONFIG, _CP0_CONFIG_SELECT, 0xa4210583);
-        // no cache on this chip!
-        // 0 data RAM access wait states
         BMXCONbits.BMXWSDRM = 0x0;
-        // enable multi vector interrupts
         INTCONbits.MVEC = 0x1;
-        // disable JTAG to be able to use TDI, TDO, TCK, TMS as digital
         DDPCONbits.JTAGEN = 0;
 
-    // set up USER pin as digital input
+
+    // set up USER pin as digital input; these are also set in a different c.file
         TRISBbits.TRISB13 = 1; //1 for input, 0 for output
         ANSELBbits.ANSB13 = 0; // 0 for digital, 1 for analog
 
@@ -153,23 +146,24 @@ int main ( void )
         PORTBbits.RB7 = 0; //Set B7 to 0-LOW/1-HIGH to begin with
 
         acc_setup();
-//        acc_write_register(, );
         __builtin_enable_interrupts();
+
         short accels[3]; // accelerations for the 3 axes
         short mags[3]; // magnetometer readings for the 3 axes
         short temp;
-           display_init();
-           char Message[MAX];
-           int Number;
-           Number = 1992;
-//           snprintf(Message, MAX, "Giorgos %d %d!", Number, temp);
-//           writemessage(Message,28,32);
-           int p;
-           _CP0_SET_COUNT(0);
-           while (_CP0_GET_COUNT()<200000000) //for 10 seconds
+        char Message[MAX];
+        int Number = 1992;
+        display_init();
+//      snprintf(Message, MAX, "Giorgos %d %d!", Number, temp);
+//      writemessage(Message,28,32);
+
+        int p;
+        _CP0_SET_COUNT(0);
+        while (_CP0_GET_COUNT()<200000000) //for 10 seconds
            {
+           //read the accelerometer x-y values first
             acc_read_register(OUT_X_L_A, (unsigned char *) accels, 6);
-          // for y-acceleration
+          // draw bars for y-acceleration
             if (accels[1]>=0){
                 for (p=32;p>=32-accels[1]*32/16000;p=p--){
                     display_pixel_set(p,64,1);
@@ -185,6 +179,7 @@ int main ( void )
                     display_pixel_set(p,66,1);
                 }
             }
+            //draw bars for x-acceleration
            if (accels[0]>=0){
                 for (p=64;p>=64-accels[0]*64/16000;p=p--/* p+(accels[1]>0)?+1:-1*/){
                     display_pixel_set(31,p,1);
