@@ -159,7 +159,7 @@ int main ( void )
 
         int p;
         _CP0_SET_COUNT(0);
-        while (_CP0_GET_COUNT()<200000000) //for 10 seconds
+        while (_CP0_GET_COUNT()<100000000) //for 5 seconds
            {
            //read the accelerometer x-y values first
             acc_read_register(OUT_X_L_A, (unsigned char *) accels, 6);

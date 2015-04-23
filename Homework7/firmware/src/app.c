@@ -1,6 +1,9 @@
 #include "app.h"
 APP_DATA appData;
 
+//Include library to read the accelerometer
+#include "accel.h"
+
 /* Mouse Report */
 MOUSE_REPORT mouseReport APP_MAKE_BUFFER_DMA_READY;
 MOUSE_REPORT mouseReportPrevious APP_MAKE_BUFFER_DMA_READY;
@@ -255,8 +258,23 @@ void APP_Tasks ( void )
                 {
                     appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
                     appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
-                    appData.xCoordinate =(int8_t)dir_table[vector & 0x07] ;
-                    appData.yCoordinate =(int8_t)dir_table[(vector+2) & 0x07];
+//                    appData.xCoordinate =(int8_t)dir_table[vector & 0x07] ;
+//                    appData.yCoordinate =(int8_t)dir_table[(vector+2) & 0x07];
+//Dir_table is defined above as int8_t dir_table[] ={-4,-4,-4, 0, 4, 4, 4, 0};
+// The y-coordinate is always 2 cells to the right of x: When x starts at -4 (1st cell), y is at -4 (3rd cell)
+// Then, the pairs go as follows: (-4,-4), (-4, 0), (-4, 4), (0, 4) etc etc
+                    short accels[3];
+                    acc_read_register(OUT_X_L_A, (unsigned char *) accels, 6);
+                    //the accels data range from -16000 to 16000; that means the mouse cursor will move dramatically
+                    //divide by 4000 to bring down to (-4,4) range for smoother movement
+//                    appData.xCoordinate = (int8_t)accels[0]/40;
+//                    appData.yCoordinate = (int8_t)accels[1]/40;
+                   //The accelerometer's position on the boars is such that + x is up and +y is right
+                   //Then, I will use the x-acceleration accels[0] as the upward acceleration for the mouse
+                   //and the +y as the right acceleration
+                   appData.xCoordinate = -accels[1]/4000;
+                   appData.yCoordinate = accels[0]/4000;
+                    
                     vector ++;
                     movement_length = 0;
                 }
