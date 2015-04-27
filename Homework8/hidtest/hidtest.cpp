@@ -57,6 +57,19 @@ int main(int argc, char* argv[])
 	// Toggle LED (cmd 0x80). The first byte is the report number (0x0).
 	buf[0] = 0x0;
 	buf[1] = 0x80;
+	
+	//Write hello to buf
+	printf("Enter your message of max 25 characters\n");
+	char c;
+	i=2;
+	while ((buf[i++]=getchar())!= '\n' && i < 27)
+	;
+	while (i<28){
+	buf[i-1]=' ';
+	i++;
+	}
+	printf("%s", buf);
+	
 	res = hid_write(handle, buf, 65);
 
 	// Request state (cmd 0x81). The first byte is the report number (0x0).
@@ -71,18 +84,6 @@ int main(int argc, char* argv[])
 	for (i = 0; i < 4; i++)
 		printf("buf[%d]: %d\n", i, buf[i]); 
 	
-	//Write hello to buf
-	printf("Enter your message of max 25 characters\n");
-	char c;
-	i=2;
-	while ((buf[i++]=getchar())!= '\n' && i < 27)
-	;
-	while (i<28x	){
-	buf[i-1]='';
-	i++;
-	}
-	printf("%s", buf);
-
 	// Finalize the hidapi library
 	res = hid_exit(); 
 

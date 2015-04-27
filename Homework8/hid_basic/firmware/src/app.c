@@ -1,7 +1,7 @@
 #include "system_definitions.h"
 #include "app.h"
 
- char Message[20];
+ char Message[50];
  
 /* Recieve data buffer */
 uint8_t receiveDataBuffer[64] APP_MAKE_BUFFER_DMA_READY;
@@ -232,8 +232,9 @@ void APP_Tasks (void )
                         BSP_LEDToggle( APP_USB_LED_1 );
                         BSP_LEDToggle( APP_USB_LED_2 );
 
-
-                        writemessage("Giorgos",28,32);
+//                        writemessage("Giorgos",28,32);
+                        sprintf(Message, "%c",appData.receiveDataBuffer[1]);
+                        writemessage(Message,28,32);
                         display_draw();
 
                         appData.hidDataReceived = false;
