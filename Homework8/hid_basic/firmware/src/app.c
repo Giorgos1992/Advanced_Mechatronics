@@ -233,8 +233,19 @@ void APP_Tasks (void )
                         BSP_LEDToggle( APP_USB_LED_2 );
 
 //                        writemessage("Giorgos",28,32);
-                        sprintf(Message, "%c",appData.receiveDataBuffer[1]);
-                        writemessage(Message,28,32);
+                        //we must check for row numbers higher than 9
+                        //In the future, I can safe test to make sure rows fall within the 64 range
+                         int row = appData.receiveDataBuffer[1] - '0';
+                        if (appData.receiveDataBuffer[2]>= '0' && appData.receiveDataBuffer[2] <= '9') //check if the next element is a number
+                            {row = 10*row + (appData.receiveDataBuffer[2] - '0');
+                            strcpy(Message, &appData.receiveDataBuffer[3]); //If the 2nd cell is a row number
+                            }
+                        else
+                        {
+                         strcpy(Message, &appData.receiveDataBuffer[2]); //If the 2nd cell is not a row number
+                        }
+                         //sprintf(Message, "%s",appData.receiveDataBuffer);
+                        writemessage(Message,row,1);
                         display_draw();
 
                         appData.hidDataReceived = false;
