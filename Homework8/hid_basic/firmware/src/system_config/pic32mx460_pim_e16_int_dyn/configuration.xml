@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<pic32mx460_pim_e16_int_dyn>
+  <HarmonyPath path="../../../.."/>
+  <ForceOptimization flag="true"/>
+  <Files>
+    <Entry>
+      <Name>system_config.c</Name>
+      <Checksum>A032B81151CAABCDE708997B20EF5CCA</Checksum>
+    </Entry>
+    <Entry>
+      <Name>system_definitions.h</Name>
+      <Checksum>211A461F851D31EF97E52BF681B10DCE</Checksum>
+    </Entry>
+    <Entry>
+      <Name>sys_clk_static.h</Name>
+      <Checksum>5136E2C3EE2A15E666B1927251CBCEAA</Checksum>
+    </Entry>
+    <Entry>
+      <Name>system_init.c</Name>
+      <Checksum>B9D500B8EE4570920DD10372E8BD8E74</Checksum>
+    </Entry>
+    <Entry>
+      <Name>system_tasks.c</Name>
+      <Checksum>19F8DD0AA426F650170A40F8C37DB0A3</Checksum>
+    </Entry>
+    <Entry>
+      <Name>sys_clk_static.c</Name>
+      <Checksum>C2132B309C6EAD8B2539BA3271FCE1B8</Checksum>
+    </Entry>
+    <Entry>
+      <Name>system_config.h</Name>
+      <Checksum>BADAE23B7F464FF9F4A86703CEBB2979</Checksum>
+    </Entry>
+    <Entry>
+      <Name>sys_ports_static.c</Name>
+      <Checksum>AE5D502DFD69D5811E0D42327E9B49EA</Checksum>
+    </Entry>
+    <Entry>
+      <Name>system_interrupt.c</Name>
+      <Checksum>904BC56B47D5CCC0DCED63BE72010D32</Checksum>
+    </Entry>
+  </Files>
+</pic32mx460_pim_e16_int_dyn>
