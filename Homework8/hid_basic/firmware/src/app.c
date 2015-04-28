@@ -1,6 +1,9 @@
 #include "system_definitions.h"
 #include "app.h"
 
+//For accelerometer reading:
+#include "accel.h"
+
  char Message[50];
  
 /* Recieve data buffer */
@@ -232,22 +235,37 @@ void APP_Tasks (void )
                         BSP_LEDToggle( APP_USB_LED_1 );
                         BSP_LEDToggle( APP_USB_LED_2 );
 
+
+                        /*The following code block is added by the user (Giorgos). It prints
+                         a message input by the user at a row specified by the user in the first 1-2 spaces of the message:
+                         e.g. "12Hello world" will print "Hello world" on the 12th row  */
+
+                        // <editor-fold defaultstate="collapsed" desc="Prints message on user-specified row">
 //                        writemessage("Giorgos",28,32);
-                        //we must check for row numbers higher than 9
-                        //In the future, I can safe test to make sure rows fall within the 64 range
-                         int row = appData.receiveDataBuffer[1] - '0';
+                        /*  If the row # > 9, two integers are sent in the array.
+                            In the future, I can safe test to make sure rows fall within the 64 range   */
+
+                        int row = appData.receiveDataBuffer[1] - '0';
                         if (appData.receiveDataBuffer[2]>= '0' && appData.receiveDataBuffer[2] <= '9') //check if the next element is a number
                             {row = 10*row + (appData.receiveDataBuffer[2] - '0');
-                            strcpy(Message, &appData.receiveDataBuffer[3]); //If the 2nd cell is a row number
+                            strcpy(Message, &appData.receiveDataBuffer[3]); //If the 2nd cell is a row number, copy the array from 3rd cell
                             }
                         else
                         {
-                         strcpy(Message, &appData.receiveDataBuffer[2]); //If the 2nd cell is not a row number
+                         strcpy(Message, &appData.receiveDataBuffer[2]); //If the 2nd cell is not a row number, copy the array from 2nd cell
                         }
                          //sprintf(Message, "%s",appData.receiveDataBuffer);
                         writemessage(Message,row,1);
                         display_draw();
 
+                        /*Clear the message after 3 seconds - prepare the screen for next message*/
+                        _CP0_SET_COUNT(0);
+                        while (_CP0_GET_COUNT()<20000000)
+                        {;} //Wait 1 second
+                         display_clear();
+                        // </editor-fold>
+                         
+               
                         appData.hidDataReceived = false;
 
                         /* Place a new read request. */
@@ -264,7 +282,7 @@ void APP_Tasks (void )
                              * the first byte.  In this case, the Get Push-button State
                              * command. */
 
-                            appData.transmitDataBuffer[0] = 0x81;
+                            appData.transmitDataBuffer[0] = 0x81; //This is 129 in decimal, that is what buffer prints in the first cell
 
                             if( BSP_SwitchStateGet(APP_USB_SWITCH_1) == BSP_SWITCH_STATE_PRESSED )
                             {
@@ -276,6 +294,28 @@ void APP_Tasks (void )
                             }
 
                             appData.hidDataTransmitted = false;
+
+
+                            
+                            //User's added code
+                                        //Try print accel value:
+//                                        short accel[3];
+//                                        acc_read_register(OUT_X_L_A, (unsigned char *) accel, 6);
+//                                        char mes[10];
+//                                        sprintf(mes,"accel is %d",accel[1]*32/16000);
+//                                        writemessage(mes,28,32);
+//                                        display_draw();
+
+                            appData.transmitDataBuffer[2]=99;
+//                            short accels[3];
+//                            acc_read_register(OUT_X_L_A, (unsigned char *) accels, 6);
+//
+                             acc_read_register(OUT_X_L_A, (unsigned char *) appData.transmitDataBuffer+3, 6);
+
+
+
+
+
 
                             /* Prepare the USB module to send the data packet to the host */
                             USB_DEVICE_HID_ReportSend (USB_DEVICE_HID_INDEX_0,
