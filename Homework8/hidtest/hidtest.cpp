@@ -30,6 +30,8 @@ int main(int argc, char* argv[])
 	wchar_t wstr[MAX_STR];
 	hid_device *handle;
 	int i;
+	
+	FILE *ofp;
 
  	// Initialize the hidapi library
 	res = hid_init();
@@ -77,13 +79,36 @@ int main(int argc, char* argv[])
 	buf[1] = 0x81;
 	res = hid_write(handle, buf, 65);
 
+	//clean buf
+	for (i=0;i<27;i++)
+	buf[i]=0;
+	
+	
 	// Read requested state
 	res = hid_read(handle, buf, 65);
 
-	// Print out the returned buffer.
-	for (i = 0; i < 4; i++)
-		printf("buf[%d]: %d\n", i, buf[i]); 
+	//Convert char (1 byte) to shorts (2 bytes) --not using buf because it is a char
+	short x,y,z;
+	x = (buf[4] << 8) | (buf[3] & 0xff);
+	y = (buf[6] << 8) | (buf[5] & 0xff);
+	z = (buf[8] << 8) | (buf [7] & 0xff);
 	
+	//Print the accelerations as SHORTS 
+	printf("x accel is: %d\ny accel is: %d\nz accel is: %d\n", x,y,z);
+
+
+	 ofp = fopen("accels.txt", "w");
+	 for (i=0; i<10; i++)
+	  fprintf(ofp,"%d\t%d\t%d\n",x,y,z);
+  
+	/*  for (i=0; i<9; i++) 
+		{
+		 fprintf(ofp,"your data\r\n",x[i],y[i],z[i]);
+		} */
+	fclose(ofp); 
+	 
+	 
+	 
 	// Finalize the hidapi library
 	res = hid_exit(); 
 

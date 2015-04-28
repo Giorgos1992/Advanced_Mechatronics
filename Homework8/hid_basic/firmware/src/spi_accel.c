@@ -23,7 +23,7 @@ unsigned char spi_io(unsigned char o) {
 
 // read data from the accelerometer, given the starting register address.
 // return the data in data
-void acc_read_register(unsigned char reg, unsigned char data[], unsigned int len) {
+  void acc_read_register(unsigned char reg, unsigned char data[], unsigned int len) {
   unsigned int i;
   reg |= 0x80; // set the read bit (as per the accelerometer's protocol)
   if(len > 1) {

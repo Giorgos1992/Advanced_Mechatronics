@@ -152,22 +152,27 @@ int main ( void )
         acc_setup();
         __builtin_enable_interrupts();
 
-//        char Message[MAX];
-//        int Number = 1992;
-//        display_init();
-//        scanf("%s", Message);
-//        //snprintf(Message, MAX, "Giorgos %d!", Number);
-//        writemessage(Message,28,32);
-//        display_draw();
-//         _CP0_SET_COUNT(0);
-//         while (_CP0_GET_COUNT()<100000000)
-//         {;} //Wait 5 seconds
+       display_init();
+       display_clear();
 
-            display_init();
-            display_clear();
-            display_draw();
-//               writemessage("Giorgos1992",28,32);
-//            display_draw();
+
+
+
+
+       //User added code
+       short accel[3];
+        acc_read_register(OUT_X_L_A, (unsigned char *) accel, 6);
+       char mes[10];
+        sprintf(mes,"X: %d, Y: %d", accel[0], accel[1]);
+        writemessage(mes,45,1);
+
+
+
+
+
+       display_draw();
+
+
     /* Initialize all MPLAB Harmony modules, including application(s). */
     SYS_Initialize ( NULL );
 
