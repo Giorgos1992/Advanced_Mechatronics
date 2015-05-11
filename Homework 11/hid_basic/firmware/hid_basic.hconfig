@@ -1,0 +1,18 @@
+mainmenu "MPLAB Harmony & Applicaiton Configuration"
+
+
+
+menu "Application Configuration"
+
+config APP_CONFIG
+    bool "Documentation"
+    default y
+    ---help---
+    IDH_HTML_APPS_USB_hid_basic
+    ---endhelp---
+
+endmenu
+
+
+source "$HARMONY_VERSION_PATH/config/harmony.hconfig"
+

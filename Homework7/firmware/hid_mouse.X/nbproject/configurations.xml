@@ -76,7 +76,7 @@
         <logicalFolder name="pic32mx_usb_sk2"
                        displayName="pic32mx_usb_sk2"
                        projectFiles="true">
-          <itemPath>../../../../../../bsp/pic32mx_usb_sk2/bsp_config.h</itemPath>
+          <itemPath>C:/microchip/harmony/v1_02/bsp/pic32mx_usb_sk2/bsp_config.h</itemPath>
         </logicalFolder>
         <logicalFolder name="pic32mx_usb_sk3"
                        displayName="pic32mx_usb_sk3"
@@ -321,25 +321,21 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
-    <Elem>../src</Elem>
-    <Elem>../src/system_config/pic32mx_usb_sk2_int_dyn</Elem>
-    <Elem>../../../../../../framework/system/devcon/src</Elem>
-    <Elem>../../../../../../framework/system/int/src</Elem>
-    <Elem>../../../../../../framework/driver/usb/usbfs/src/dynamic</Elem>
-    <Elem>../../../../../../framework/usb/src/dynamic</Elem>
-    <Elem>../../../../../../bsp/pic32mx_usb_sk2</Elem>
-    <Elem>../src</Elem>
-    <Elem>../src/system_config/pic32mz_ec_sk_int_dyn</Elem>
-    <Elem>../../../../../../framework/driver/tmr/src/dynamic</Elem>
-    <Elem>../../../../../../framework/peripheral/int/src</Elem>
-    <Elem>../../../../../../framework/system/clk/src</Elem>
-    <Elem>../../../../../../framework/system/tmr/src</Elem>
-    <Elem>../../../../../../framework/driver/usb/usbhs/src/dynamic</Elem>
-    <Elem>../../../../../../bsp/pic32mz_ec_sk</Elem>
-    <Elem>../src/system_config/pic32mx_usb_sk3_int_dyn</Elem>
-    <Elem>../../../../../../bsp/pic32mx_usb_sk3</Elem>
-    <Elem>../src/system_config/pic32mx460_pim_e16_int_dyn</Elem>
-    <Elem>../../../../../../bsp/pic32mx460_pim+e16</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\src</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../framework/system/devcon/src</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../framework/system/int/src</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../framework/driver/usb/usbfs/src/dynamic</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../framework/usb/src/dynamic</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../bsp/pic32mx_usb_sk2</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../framework/driver/tmr/src/dynamic</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../framework/peripheral/int/src</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../framework/system/clk/src</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../framework/system/tmr/src</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../framework/driver/usb/usbhs/src/dynamic</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../bsp/pic32mz_ec_sk</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../bsp/pic32mx_usb_sk3</Elem>
+    <Elem>C:\Users\Giorgos1992\Dropbox\Advanced_Mechatronics\Homework7\firmware\hid_mouse.X\../../../../../../bsp/pic32mx460_pim+e16</Elem>
+    <Elem>C:/microchip/harmony/v1_02/bsp/pic32mx_usb_sk2</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -1250,22 +1246,6 @@
         <C32Global>
         </C32Global>
       </item>
-      <item path="../../../../../../bsp/pic32mx_usb_sk2/bsp_config.h"
-            ex="true"
-            overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
-      </item>
       <item path="../../../../../../bsp/pic32mx_usb_sk2/bsp_sys_init.c"
             ex="true"
             overriding="false">
@@ -1966,22 +1946,6 @@
         </C32Global>
       </item>
       <item path="../../../../../../bsp/pic32mx460_pim+e16/bsp_sys_init.c"
-            ex="true"
-            overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
-      </item>
-      <item path="../../../../../../bsp/pic32mx_usb_sk2/bsp_config.h"
             ex="true"
             overriding="false">
         <C32>
@@ -2774,22 +2738,6 @@
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
-      <item path="../../../../../../bsp/pic32mx_usb_sk2/bsp_config.h"
-            ex="true"
-            overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
-      </item>
       <item path="../../../../../../bsp/pic32mx_usb_sk2/bsp_sys_init.c"
             ex="true"
             overriding="false">
