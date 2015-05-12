@@ -1,10 +1,10 @@
 #include "system_definitions.h"
 #include "app.h"
-
-//For accelerometer reading:
-#include "accel.h"
+#include "accel.h" //For accelerometer reading
 
  char Message[50];
+ int i;
+ short accels[3];
 
 /* Recieve data buffer */
 uint8_t receiveDataBuffer[64] APP_MAKE_BUFFER_DMA_READY;
@@ -235,8 +235,8 @@ void APP_Tasks (void )
                         BSP_LEDToggle( APP_USB_LED_1 );
                         BSP_LEDToggle( APP_USB_LED_2 );
 
-
-                        /*The following code block is added by the user (Giorgos). It prints
+                        /*The following code block is added by the user (Giorgos).
+                         * It prints
                          a message input by the user at a row specified by the user in the first 1-2 spaces of the message:
                          e.g. "12Hello world" will print "Hello world" on the 12th row  */
 
@@ -265,7 +265,6 @@ void APP_Tasks (void )
                          display_clear();
                         // </editor-fold>
 
-
                         appData.hidDataReceived = false;
 
                         /* Place a new read request. */
@@ -284,42 +283,34 @@ void APP_Tasks (void )
 
                             appData.transmitDataBuffer[0] = 0x81; //This is 129 in decimal, that is what buffer prints in the first cell
 
-                            if( BSP_SwitchStateGet(APP_USB_SWITCH_1) == BSP_SWITCH_STATE_PRESSED )
-                            {
-                                appData.transmitDataBuffer[1] = 0x00;
-                            }
-                            else
-                            {
-                                appData.transmitDataBuffer[1] = 0x01;
-                            }
+//                            if( BSP_SwitchStateGet(APP_USB_SWITCH_1) == BSP_SWITCH_STATE_PRESSED )
+//                            {
+//                                appData.transmitDataBuffer[1] = 0x00;
+//                            }
+//                            else
+//                            {
+//                                appData.transmitDataBuffer[1] = 0x01;
+//                              }
 
+                                  //User's added code *********************************************************
+                                  acc_read_register(OUT_X_L_A, (unsigned char *) appData.transmitDataBuffer+3, 6);
+//                               i=0;
+//                                //The z-data should be saved on the 3rd-4th (1st iteration), 5th-6th (2nd iter) and so on cell
+//                                acc_read_register(OUT_X_L_A, (unsigned char *) ((appData.transmitDataBuffer+3)+2*i), 6);
+//                                //On 1st iter, x data are on 3rd-4th cell, y on 5th-6h, z on 7th-8th
+//                                //Thus, copy/overwrite the z data over the x data
+//                                appData.transmitDataBuffer[(3+2*i)]=appData.transmitDataBuffer[(3+2*i)+4];
+//                                appData.transmitDataBuffer[(3+2*i)+1] = appData.transmitDataBuffer[(3+2*i)+5];
+//                                //Erase y-data
+//                                appData.transmitDataBuffer[(3+2*i)+2] = 0;
+//                                appData.transmitDataBuffer[(3+2*i)+3] = 0;
+                            
                             appData.hidDataTransmitted = false;
-
-
-
-                            //User's added code
-                                        //Try print accel value:
-//                                        short accel[3];
-//                                        acc_read_register(OUT_X_L_A, (unsigned char *) accel, 6);
-//                                        char mes[10];
-//                                        sprintf(mes,"accel is %d",accel[1]*32/16000);
-//                                        writemessage(mes,28,32);
-//                                        display_draw();
-
-                            appData.transmitDataBuffer[2]=99;
-//                            short accels[3];
-//                            acc_read_register(OUT_X_L_A, (unsigned char *) accels, 6);
-//
-                             acc_read_register(OUT_X_L_A, (unsigned char *) appData.transmitDataBuffer+3, 6);
-
-
-
-
-
-
+                            
                             /* Prepare the USB module to send the data packet to the host */
                             USB_DEVICE_HID_ReportSend (USB_DEVICE_HID_INDEX_0,
                                     &appData.txTransferHandle, appData.transmitDataBuffer, 64 );
+                         
 
                             appData.hidDataReceived = false;
 
