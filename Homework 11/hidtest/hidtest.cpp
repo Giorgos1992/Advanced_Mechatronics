@@ -15,8 +15,12 @@ int main(int argc, char* argv[])
 	hid_device *handle;
 	int i;
 	int iter;
-	double Z[30];
-	short z[30];
+	double Z[1000];
+	short z[1000];
+	
+	
+	for (i=0;i<65;i++)
+		buf[i]=0; //clean buf array
 	
 	FILE *ofp;
 	
@@ -42,9 +46,9 @@ int main(int argc, char* argv[])
 
 	// Toggle LED (cmd 0x80). The first byte is the report number (0x0).
 	buf[0] = 0x0;
-	buf[1] = 0x80;
+	buf[1] = 0x01; //case 0x01 for the PIC to read the data - input by the user
 	
-	//Write hello to buf
+	//User inputs message to be printed to the screen
 	wprintf(L"Enter your message of max 25 characters\n");
 	char c;
 	i=2;
@@ -54,25 +58,30 @@ int main(int argc, char* argv[])
 	buf[i-1]=' ';
 	i++;
 	}
-	wprintf(L"%s", buf);
 	res = hid_write(handle, buf, 65); 
 	
-	for (iter = 0; iter < 20; iter++)
+	
+	printf("Data collection started\n");
+	for (iter = 0; iter < 50; iter++) //Each iteration saves data at 50kHz. 500 iterations take about 500*0.02 = 10 seconds
 	{
 		// Request state (cmd 0x81). The first byte is the report number (0x0).
 		buf[0] = 0x0;
-		buf[1] = 0x81;
+		buf[1] = 0x02; //case 0x02 in the PIC code (MPLAB IDE) -- the PIC should reply with (accelerometer) data
 		res = hid_write(handle, buf, 65);
 		res = hid_read(handle, buf, 65);
+		while (buf[0]!=1) //waits until data are sent
+		{;
+		}
 		//Convert char (1 byte) to shorts (2 bytes) --not using buf because it is a char
-		z[iter] = (buf[4] << 8) | (buf[3] & 0xff);
+		z[iter] = (buf[2] << 8) | (buf[1] & 0xff);
 		//Print the accelerations as FLOATS 
 		/* printf("z accel is: %.2f\n", ((float)z[iter])/16000); */
 		Z[iter] = (float)z[iter]/16000; 
 	}
-		
+	printf("Data collection finished\n");
+	
 	ofp = fopen("accels.txt", "w");
-	 for (i=0; i<20; i++)
+	 for (i=0; i<50; i++)
 	  fprintf(ofp,"%.3f\n",Z[i]);
   	fclose(ofp); 
 	

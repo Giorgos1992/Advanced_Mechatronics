@@ -229,22 +229,19 @@ void APP_Tasks (void )
 
                 switch(appData.receiveDataBuffer[0])
                 {
-                    case 0x80:
-
+                    case 0x01: //-- reads the data from the computer -- user message to be printed to the screen
                         /* Toggle on board LED1 to LED2. */
                         BSP_LEDToggle( APP_USB_LED_1 );
                         BSP_LEDToggle( APP_USB_LED_2 );
 
-                        /*The following code block is added by the user (Giorgos).
-                         * It prints
-                         a message input by the user at a row specified by the user in the first 1-2 spaces of the message:
-                         e.g. "12Hello world" will print "Hello world" on the 12th row  */
+                        //The code below prints a message input by the user at a row specified by the user in the first 1-2 spaces of the message:
+                        //e.g. "12Hello world" will print "Hello world" on the 12th row  */
 
                         // <editor-fold defaultstate="collapsed" desc="Prints message on user-specified row">
 //                        writemessage("Giorgos",28,32);
+
                         /*  If the row # > 9, two integers are sent in the array.
                             In the future, I can safe test to make sure rows fall within the 64 range   */
-
                         int row = appData.receiveDataBuffer[1] - '0';
                         if (appData.receiveDataBuffer[2]>= '0' && appData.receiveDataBuffer[2] <= '9') //check if the next element is a number
                             {row = 10*row + (appData.receiveDataBuffer[2] - '0');
@@ -254,11 +251,10 @@ void APP_Tasks (void )
                         {
                          strcpy(Message, &appData.receiveDataBuffer[2]); //If the 2nd cell is not a row number, copy the array from 2nd cell
                         }
-                         //sprintf(Message, "%s",appData.receiveDataBuffer);
-                        writemessage(Message,row,1);
+                         writemessage(Message,row,1);
                         display_draw();
 
-                        /*Clear the message after 3 seconds - prepare the screen for next message*/
+                        /*Clear the message after 1 second - prepare the screen for next message*/
                         _CP0_SET_COUNT(0);
                         while (_CP0_GET_COUNT()<20000000)
                         {;} //Wait 1 second
@@ -273,7 +269,7 @@ void APP_Tasks (void )
 
                         break;
 
-                    case 0x81:
+                    case 0x02: //-- the PIC should reply with (accelerometer) data
 
                         if(appData.hidDataTransmitted)
                         {
@@ -281,29 +277,31 @@ void APP_Tasks (void )
                              * the first byte.  In this case, the Get Push-button State
                              * command. */
 
-                            appData.transmitDataBuffer[0] = 0x81; //This is 129 in decimal, that is what buffer prints in the first cell
+//                            appData.transmitDataBuffer[0] = 0x81; //This is 129 in decimal, that is what buffer prints in the first cell
 
-//                            if( BSP_SwitchStateGet(APP_USB_SWITCH_1) == BSP_SWITCH_STATE_PRESSED )
-//                            {
-//                                appData.transmitDataBuffer[1] = 0x00;
-//                            }
-//                            else
-//                            {
-//                                appData.transmitDataBuffer[1] = 0x01;
-//                              }
+                            if (_CP0_GET_COUNT()<200000) //Will not read data faster than 100kHz
 
-                                  //User's added code *********************************************************
-                                  acc_read_register(OUT_X_L_A, (unsigned char *) appData.transmitDataBuffer+3, 6);
-//                               i=0;
-//                                //The z-data should be saved on the 3rd-4th (1st iteration), 5th-6th (2nd iter) and so on cell
-//                                acc_read_register(OUT_X_L_A, (unsigned char *) ((appData.transmitDataBuffer+3)+2*i), 6);
-//                                //On 1st iter, x data are on 3rd-4th cell, y on 5th-6h, z on 7th-8th
-//                                //Thus, copy/overwrite the z data over the x data
-//                                appData.transmitDataBuffer[(3+2*i)]=appData.transmitDataBuffer[(3+2*i)+4];
-//                                appData.transmitDataBuffer[(3+2*i)+1] = appData.transmitDataBuffer[(3+2*i)+5];
-//                                //Erase y-data
-//                                appData.transmitDataBuffer[(3+2*i)+2] = 0;
-//                                appData.transmitDataBuffer[(3+2*i)+3] = 0;
+                                appData.transmitDataBuffer[0] = 0x00; //The computer does not read the data
+                            else
+                            {
+                                appData.transmitDataBuffer[0] = 0x01; //The computer reads the data
+//                            
+                                 //Read accelerometer data and save it to appData.transmitDataBuffer[1]-[6] cells
+                                  acc_read_register(OUT_X_L_A, (unsigned char *) appData.transmitDataBuffer+1, 6);
+
+                                // Overwrite x-data with z-data
+                                appData.transmitDataBuffer[1] = appData.transmitDataBuffer[5];
+                                appData.transmitDataBuffer[2] = appData.transmitDataBuffer[6];
+                                //Erase y-data
+                                appData.transmitDataBuffer[3] = 0;
+                                appData.transmitDataBuffer[4] = 0;
+                                //Erase old z-data
+                                appData.transmitDataBuffer[5] = 0;
+                                appData.transmitDataBuffer[6] = 0;
+
+                                 _CP0_SET_COUNT(0); // Resets counter to 0 after data is sent
+
+                            }
                             
                             appData.hidDataTransmitted = false;
                             
