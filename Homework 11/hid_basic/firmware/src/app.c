@@ -5,6 +5,7 @@
  char Message[50];
  int i;
  short accels[3];
+ float Time=0;
 
 /* Recieve data buffer */
 uint8_t receiveDataBuffer[64] APP_MAKE_BUFFER_DMA_READY;
@@ -254,11 +255,11 @@ void APP_Tasks (void )
                          writemessage(Message,row,1);
                         display_draw();
 
-                        /*Clear the message after 1 second - prepare the screen for next message*/
-                        _CP0_SET_COUNT(0);
-                        while (_CP0_GET_COUNT()<20000000)
-                        {;} //Wait 1 second
-                         display_clear();
+//                        /*Clear the message after 1 second - prepare the screen for next message*/
+//                        _CP0_SET_COUNT(0);
+//                        while (_CP0_GET_COUNT()<20000000)
+//                        {;} //Wait 1 second
+//                         display_clear();
                         // </editor-fold>
 
                         appData.hidDataReceived = false;
@@ -277,15 +278,12 @@ void APP_Tasks (void )
                              * the first byte.  In this case, the Get Push-button State
                              * command. */
 
-//                            appData.transmitDataBuffer[0] = 0x81; //This is 129 in decimal, that is what buffer prints in the first cell
-
-                            if (_CP0_GET_COUNT()<200000) //Will not read data faster than 100kHz
-
-                                appData.transmitDataBuffer[0] = 0x00; //The computer does not read the data
+                            if (_CP0_GET_COUNT()<20000) //Will not read data faster than 500Hz (1 sec/500) (10^7 is 1 second/1Hz - 2*10^4 is 1/500sec/500 Hz)
+                            {
+                             appData.transmitDataBuffer[0] = 0; //The computer does not read the data
+                            }
                             else
                             {
-                                appData.transmitDataBuffer[0] = 0x01; //The computer reads the data
-//                            
                                  //Read accelerometer data and save it to appData.transmitDataBuffer[1]-[6] cells
                                   acc_read_register(OUT_X_L_A, (unsigned char *) appData.transmitDataBuffer+1, 6);
 
@@ -299,9 +297,17 @@ void APP_Tasks (void )
                                 appData.transmitDataBuffer[5] = 0;
                                 appData.transmitDataBuffer[6] = 0;
 
+                                appData.transmitDataBuffer[0] = 1; //The computer reads the data
                                  _CP0_SET_COUNT(0); // Resets counter to 0 after data is sent
 
                             }
+
+                            display_clear();
+                            display_draw();
+                            Time = Time + _CP0_GET_COUNT() ;
+                            sprintf(Message, "Time: %.2f", Time/10000000); //Prints seconds
+                            writemessage(Message,50,1);
+                            display_draw();
                             
                             appData.hidDataTransmitted = false;
                             

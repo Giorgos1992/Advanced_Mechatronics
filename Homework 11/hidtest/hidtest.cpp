@@ -15,8 +15,8 @@ int main(int argc, char* argv[])
 	hid_device *handle;
 	int i;
 	int iter;
-	double Z[1000];
-	short z[1000];
+	double Z[10000];
+	short z[10000];
 	
 	
 	for (i=0;i<65;i++)
@@ -62,26 +62,35 @@ int main(int argc, char* argv[])
 	
 	
 	printf("Data collection started\n");
-	for (iter = 0; iter < 50; iter++) //Each iteration saves data at 50kHz. 500 iterations take about 500*0.02 = 10 seconds
+	
+	iter = 0;
+	while (iter < 1000)	 //Each iteration saves data at 500Hz/0.002s. 10000 iterations take about 10000/500 = 20 seconds
 	{
 		// Request state (cmd 0x81). The first byte is the report number (0x0).
 		buf[0] = 0x0;
 		buf[1] = 0x02; //case 0x02 in the PIC code (MPLAB IDE) -- the PIC should reply with (accelerometer) data
 		res = hid_write(handle, buf, 65);
 		res = hid_read(handle, buf, 65);
-		while (buf[0]!=1) //waits until data are sent
-		{;
+		if (buf[0] != 1)  //do not read data
+		{
+			printf("No data\n");
+			;
 		}
+		else 
+		{
+			
 		//Convert char (1 byte) to shorts (2 bytes) --not using buf because it is a char
 		z[iter] = (buf[2] << 8) | (buf[1] & 0xff);
 		//Print the accelerations as FLOATS 
 		/* printf("z accel is: %.2f\n", ((float)z[iter])/16000); */
 		Z[iter] = (float)z[iter]/16000; 
+		iter++;
+		}
 	}
 	printf("Data collection finished\n");
 	
 	ofp = fopen("accels.txt", "w");
-	 for (i=0; i<50; i++)
+	 for (i=0; i<1000; i++)
 	  fprintf(ofp,"%.3f\n",Z[i]);
   	fclose(ofp); 
 	
