@@ -154,22 +154,6 @@ int main ( void )
 
        display_init();
        display_clear();
-
-
-
-
-
-       //User added code
-       short accel[3];
-        acc_read_register(OUT_X_L_A, (unsigned char *) accel, 6);
-       char mes[10];
-        sprintf(mes,"X: %d, Y: %d", accel[0], accel[1]);
-        writemessage(mes,45,1);
-
-
-
-
-
        display_draw();
 
 
