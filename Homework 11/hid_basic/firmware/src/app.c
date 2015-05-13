@@ -6,6 +6,7 @@
  int i;
  short accels[3];
  float Time=0;
+ float Time1, Time2,Time3,Time4;
 
 /* Recieve data buffer */
 uint8_t receiveDataBuffer[64] APP_MAKE_BUFFER_DMA_READY;
@@ -278,7 +279,28 @@ void APP_Tasks (void )
                              * the first byte.  In this case, the Get Push-button State
                              * command. */
 
-                            if (_CP0_GET_COUNT()<20000) //Will not read data faster than 500Hz (1 sec/500) (10^7 is 1 second/1Hz - 2*10^4 is 1/500sec/500 Hz)
+
+//                            while (_CP0_GET_COUNT()<2000){
+//                                ;
+//                            }
+//
+//                            //Read accelerometer data and save it to appData.transmitDataBuffer[1]-[6] cells
+//                                  acc_read_register(OUT_X_L_A, (unsigned char *) appData.transmitDataBuffer+1, 6);
+//
+//                                // Overwrite x-data with z-data
+//                                appData.transmitDataBuffer[1] = appData.transmitDataBuffer[5];
+//                                appData.transmitDataBuffer[2] = appData.transmitDataBuffer[6];
+//                                //Erase y-data
+//                                appData.transmitDataBuffer[3] = 0;
+//                                appData.transmitDataBuffer[4] = 0;
+//                                //Erase old z-data
+//                                appData.transmitDataBuffer[5] = 0;
+//                                appData.transmitDataBuffer[6] = 0;
+//
+//                                appData.transmitDataBuffer[0] = 1; //The computer reads the data
+//                                 _CP0_SET_COUNT(0); // Resets counter to 0 after data is sent
+                            
+                            if (_CP0_GET_COUNT()<800000) //Will not read data faster than 25Hz (1 sec/25) (2*10^7 is 1 second/1Hz - 8*10^5 is 1/25sec/25 Hz)
                             {
                              appData.transmitDataBuffer[0] = 0; //The computer does not read the data
                             }
@@ -298,17 +320,30 @@ void APP_Tasks (void )
                                 appData.transmitDataBuffer[6] = 0;
 
                                 appData.transmitDataBuffer[0] = 1; //The computer reads the data
-                                 _CP0_SET_COUNT(0); // Resets counter to 0 after data is sent
+                                 Time = _CP0_GET_COUNT();
+                                _CP0_SET_COUNT(0); // Resets counter to 0 after data is sent
+//                                Time1 = 0;
+//                                Time2 = 0;
+//
+//                                 Time1 = _CP0_GET_COUNT();
+//                                  display_clear();
+////                            display_draw();
+////                            Time = Time + _CP0_GET_COUNT() ;
+//                                Time2 = _CP0_GET_COUNT();
+//                                Time = Time - (Time2-Time1) - (Time4-Time3);
+//                                sprintf(Message, "Time: %.2f", Time/20000000); //Prints seconds passed
+//                                    Time3 = 0;
+//                                Time4 = 0;
+//
+//                                Time3= _CP0_GET_COUNT();
+//                                writemessage(Message,50,1);
+//                                display_draw();
+//                                Time4 = _CP0_GET_COUNT();
+
 
                             }
+                             
 
-                            display_clear();
-                            display_draw();
-                            Time = Time + _CP0_GET_COUNT() ;
-                            sprintf(Message, "Time: %.2f", Time/10000000); //Prints seconds
-                            writemessage(Message,50,1);
-                            display_draw();
-                            
                             appData.hidDataTransmitted = false;
                             
                             /* Prepare the USB module to send the data packet to the host */

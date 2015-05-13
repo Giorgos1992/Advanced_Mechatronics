@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 	printf("Data collection started\n");
 	
 	iter = 0;
-	while (iter < 1000)	 //Each iteration saves data at 500Hz/0.002s. 10000 iterations take about 10000/500 = 20 seconds
+	while (iter < 500)	 //Each iteration saves data at 25Hz/0.04s. 100 iterations take about 1000*0.04 = 40 seconds(48 sec measured)
 	{
 		// Request state (cmd 0x81). The first byte is the report number (0x0).
 		buf[0] = 0x0;
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
 		res = hid_read(handle, buf, 65);
 		if (buf[0] != 1)  //do not read data
 		{
-			printf("No data\n");
+			// printf("No data\n");
 			;
 		}
 		else 
@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
 	printf("Data collection finished\n");
 	
 	ofp = fopen("accels.txt", "w");
-	 for (i=0; i<1000; i++)
+	 for (i=0; i<500; i++)
 	  fprintf(ofp,"%.3f\n",Z[i]);
   	fclose(ofp); 
 	
