@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 	printf("Data collection started\n");
 	
 	iter = 0;
-	while (iter < 500)	 //Each iteration saves data at 25Hz/0.04s. 100 iterations take about 1000*0.04 = 40 seconds(48 sec measured)
+	while (iter < 500)	 //Each iteration saves data at 25Hz/0.04s. 1000 iterations take about 1000*0.04 = 40 seconds(48 sec measured)
 	{
 		// Request state (cmd 0x81). The first byte is the report number (0x0).
 		buf[0] = 0x0;

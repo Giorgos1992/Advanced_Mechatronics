@@ -15,6 +15,7 @@ plotFFT(Data);
 subplot(3,1,3)
 plotFFT(Data);
 
+
 abs(mean(Data))  % Should be the same as magnitude of spike
 % The spike should appear around 0.5Hz (freq at which I moved the board)
 % Sampling freq was 25Hz, Nyquist freq is 12.5Hz
