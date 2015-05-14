@@ -3,10 +3,9 @@
 #include "accel.h" //For accelerometer reading
 
  char Message[50];
- int i;
  short accels[3];
- float Time=0;
- float Time1, Time2,Time3,Time4;
+ static short Filter[5] = {0,0,0,0,0};
+ short average;
 
 /* Recieve data buffer */
 uint8_t receiveDataBuffer[64] APP_MAKE_BUFFER_DMA_READY;
@@ -177,6 +176,8 @@ void APP_Initialize ( void )
 void APP_Tasks (void )
 {
 
+     static int i=0;
+
     /* Check if device is configured.  See if it is configured with correct
      * configuration value  */
 
@@ -278,13 +279,26 @@ void APP_Tasks (void )
                             /* Echo back to the host PC the command we are fulfilling in
                              * the first byte.  In this case, the Get Push-button State
                              * command. */
+                            
+                            if (_CP0_GET_COUNT()<800000) //Will not read data faster than 25Hz (1 sec/25) (2*10^7 is 1 second/1Hz - 8*10^5 is 1/25sec/25 Hz)
+                            {
+                             appData.transmitDataBuffer[0] = 0; //The computer does not read the data
+                            }
+                            else
+                            {
 
+                                //Averaging and processing data as char (1 byte) is cumbersome
+                                //Average and filter data as shorts in accels array and transfer to the bufer before sending to the computer
+                               
+                                //Read accelerometer data and save it to appData.transmitDataBuffer[1]-[6] cells
+                                  _CP0_SET_COUNT(0); // Resets counter to 0 after data is sent
+                                    acc_read_register(OUT_X_L_A, (unsigned char *) accels, 6);
 
-//                            while (_CP0_GET_COUNT()<2000){
-//                                ;
-//                            }
-//
-//                            //Read accelerometer data and save it to appData.transmitDataBuffer[1]-[6] cells
+                                  Filter[i%5] = accels[2]; //store z component to filter array
+
+                                  i++;
+
+//                                //Read accelerometer data and save it to appData.transmitDataBuffer[1]-[6] cells
 //                                  acc_read_register(OUT_X_L_A, (unsigned char *) appData.transmitDataBuffer+1, 6);
 //
 //                                // Overwrite x-data with z-data
@@ -296,51 +310,18 @@ void APP_Tasks (void )
 //                                //Erase old z-data
 //                                appData.transmitDataBuffer[5] = 0;
 //                                appData.transmitDataBuffer[6] = 0;
-//
-//                                appData.transmitDataBuffer[0] = 1; //The computer reads the data
-//                                 _CP0_SET_COUNT(0); // Resets counter to 0 after data is sent
-                            
-                            if (_CP0_GET_COUNT()<800000) //Will not read data faster than 25Hz (1 sec/25) (2*10^7 is 1 second/1Hz - 8*10^5 is 1/25sec/25 Hz)
-                            {
-                             appData.transmitDataBuffer[0] = 0; //The computer does not read the data
-                            }
-                            else
-                            {
-                                 //Read accelerometer data and save it to appData.transmitDataBuffer[1]-[6] cells
-                                  acc_read_register(OUT_X_L_A, (unsigned char *) appData.transmitDataBuffer+1, 6);
-
-                                // Overwrite x-data with z-data
-                                appData.transmitDataBuffer[1] = appData.transmitDataBuffer[5];
-                                appData.transmitDataBuffer[2] = appData.transmitDataBuffer[6];
-                                //Erase y-data
-                                appData.transmitDataBuffer[3] = 0;
-                                appData.transmitDataBuffer[4] = 0;
-                                //Erase old z-data
-                                appData.transmitDataBuffer[5] = 0;
-                                appData.transmitDataBuffer[6] = 0;
-
+                                  if (i>=5) //Have the computer read data after the array of size 5 is full;
+                                  {
                                 appData.transmitDataBuffer[0] = 1; //The computer reads the data
-                                 Time = _CP0_GET_COUNT();
-                                _CP0_SET_COUNT(0); // Resets counter to 0 after data is sent
-//                                Time1 = 0;
-//                                Time2 = 0;
-//
-//                                 Time1 = _CP0_GET_COUNT();
+                                average = (Filter[0]+Filter[1]+Filter[2]+Filter[3]+Filter[4])/5;
+                                appData.transmitDataBuffer[1] = average & 0xff; //stores bits 0-7 to 1st byte in char
+                                appData.transmitDataBuffer[2] = (average >> 8) & 0xff;   //stores bits 8-15 to 2nd byte in char
+                                  }
 //                                  display_clear();
-////                            display_draw();
-////                            Time = Time + _CP0_GET_COUNT() ;
-//                                Time2 = _CP0_GET_COUNT();
-//                                Time = Time - (Time2-Time1) - (Time4-Time3);
-//                                sprintf(Message, "Time: %.2f", Time/20000000); //Prints seconds passed
-//                                    Time3 = 0;
-//                                Time4 = 0;
-//
-//                                Time3= _CP0_GET_COUNT();
-//                                writemessage(Message,50,1);
-//                                display_draw();
-//                                Time4 = _CP0_GET_COUNT();
-
-
+//                                  display_draw();
+//                                  sprintf(Message, "Time: %.2f", Time/20000000); //Prints seconds passed
+//                                  writemessage(Message,50,1);
+//                                  display_draw();
                             }
                              
 
