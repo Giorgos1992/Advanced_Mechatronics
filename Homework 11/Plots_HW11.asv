@@ -40,7 +40,7 @@ close
 title(['Frequency response'])
 subplot(2,2,2)
 plot(MAF_Data)
-title('Filtered Data with 10 coef.')
+title('Filtered Data')
 subplot(2,2,4)
 plotFFT(MAF_Data')
 
@@ -64,7 +64,7 @@ close
 title(['Frequency response'])
 subplot(2,2,2)
 plot(FIR_Data)
-title('Filtered Data with 10 coef.')
+title('Filtered Data')
 subplot(2,2,4)
 plotFFT(FIR_Data)
 
